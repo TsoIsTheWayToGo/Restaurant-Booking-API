@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node-dev src/index.ts",
-    "seed": "ts-node src/seed.ts",
+    "seed": "ts-node src/data/seed.ts",
     "test": "jest"
   },
   "keywords": [],
