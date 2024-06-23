@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { AppDataSource } from '../data/data-source';
 import { Restaurant } from '../entities/Restaurant';
 
-
 export const findRestaurants = async (req: Request, res: Response) => {
     const { eaters, time } = req.body;
 
@@ -24,13 +23,20 @@ export const findRestaurants = async (req: Request, res: Response) => {
             .where(`ARRAY(SELECT UNNEST(restaurant.endorsements)) @> ARRAY[:...endorsements]::text[]`, { endorsements })
             .getMany();
 
-        const filteredRestaurants = restaurants.filter(restaurant =>
-            restaurant.tables.some(table =>
+        const filteredRestaurants = restaurants.map(restaurant => {
+            const availableTables = restaurant.tables.filter(table =>
                 !table.reservations.some(reservation =>
                     new Date(reservation.reservationTime).toISOString() === new Date(time).toISOString()
                 )
-            )
-        );
+            );
+
+            return {
+                id: restaurant.id,
+                name: restaurant.name,
+                endorsements: restaurant.endorsements,
+                availableTables: availableTables.length
+            };
+        }).filter(restaurant => restaurant.availableTables > 0);
 
         res.json(filteredRestaurants);
     } catch (error) {
