@@ -15,6 +15,9 @@ export class Reservation {
     @ManyToOne(() => Table, table => table.reservations)
     table!: Table;
 
+    @Column({ nullable: true })
+    groupId?: string;
+
     static async checkExistingReservation(tableId: number, reservationTime: Date, reservationRepository: Repository<Reservation>): Promise<boolean> {
         const reservationTimeEnd = new Date(reservationTime.getTime() + 2 * 60 * 60 * 1000);
         const existingReservation = await reservationRepository.createQueryBuilder('reservation')
@@ -35,11 +38,12 @@ export class Reservation {
         return !!overlappingReservation;
     }
 
-    static async createNewReservation(dinerName: string, reservationTime: Date, table: Table, reservationRepository: Repository<Reservation>): Promise<Reservation> {
+    static async createNewReservation(dinerName: string, reservationTime: Date, table: Table, reservationRepository: Repository<Reservation>, groupId?: string): Promise<Reservation> {
         const reservation = new Reservation();
         reservation.dinerName = dinerName;
         reservation.reservationTime = reservationTime;
         reservation.table = table;
+        reservation.groupId = groupId;
 
         await reservationRepository.save(reservation);
         return reservation;
