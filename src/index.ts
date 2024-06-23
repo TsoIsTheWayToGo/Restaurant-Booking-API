@@ -1,7 +1,7 @@
 import { AppDataSource } from './data/data-source';
 import express from 'express';
 import { findRestaurants } from './controllers/restaurantController';
-import { createReservation, deleteReservation } from './controllers/reservationController';
+import { createReservation, deleteReservation, createGroupReservation } from './controllers/reservationController';
 
 const app = express();
 app.use(express.json());
@@ -9,6 +9,7 @@ app.use(express.json());
 app.post('/restaurants/search', findRestaurants);
 
 app.post('/reservations', createReservation);
+app.post('/reservations/group', createGroupReservation);
 app.delete('/reservations/:id', deleteReservation);
 
 
