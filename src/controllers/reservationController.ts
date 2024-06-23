@@ -59,7 +59,7 @@ export const createGroupReservation = async (req: Request, res: Response) => {
         const tableRepository = AppDataSource.getRepository(Table);
         const reservationRepository = AppDataSource.getRepository(Reservation);
 
-        const table = await tableRepository.findOne({ where: { id: tableId } });
+        const table = await tableRepository.findOne({ where: { id: tableId }, relations: ['restaurant'] });
 
         if (!table) {
             return res.status(404).json({ message: 'Table not found' });
@@ -81,7 +81,7 @@ export const createGroupReservation = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Table is already reserved at this time' });
         }
 
-        // Create a single reservation for the group
+        // Create reservations for each diner in the group
         const createdReservations = [];
         for (const diner of diners) {
             const reservation = await Reservation.createNewReservation(diner, reservationTimeStart, table, reservationRepository, groupName);
@@ -91,13 +91,22 @@ export const createGroupReservation = async (req: Request, res: Response) => {
         // Format the response
         const response = {
             reservationId: createdReservations[0].id,
+            reservationTime: reservationTimeStart,
             groupId: groupName,
-            diners: createdReservations.map(reservation => reservation.dinerName)
+            diners: createdReservations.map(reservation => reservation.dinerName),
+            table: {
+                id: table.id,
+                capacity: table.capacity,
+                restaurant: {
+                    id: table.restaurant.id,
+                    name: table.restaurant.name
+                }
+            }
         };
 
         res.status(201).json(response);
     } catch (error) {
-        console.error(error);
+        console.error('Error creating group reservation:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
