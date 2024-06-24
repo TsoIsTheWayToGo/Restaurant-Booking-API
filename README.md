@@ -4,7 +4,7 @@ This is a RESTful API for a restaurant booking system with a social twist. It al
 
 ## Note to Interviewers
 
-I built this API to meet the challenge requirements, but in a real-world scenario, I would make several improvements to enhance performance, scalability, and maintainability. I would add thorough data validation, implement global error handling, and use unique identifiers like email addresses or phone numbers. To handle multiple reservations simultaneously, I would use database transactions and optimize the database with indexes. Additionally, I would implement strong security measures, including authentication and authorization. These changes would make the API more reliable and maintainable in a production environment.
+I built this API to meet the challenge requirements, but in a real-world scenario, I would make several improvements to enhance performance, scalability, and maintainability. I would add thorough data validation, implement global error handling, and use unique identifiers like user id, email addresses or phone numbers. To handle multiple reservations simultaneously, I would use database transactions and optimize the database with indexes. Additionally, I would implement strong security measures, including authentication and authorization. These changes would make the API more reliable and maintainable in a production environment.
 
 
 ## Features
